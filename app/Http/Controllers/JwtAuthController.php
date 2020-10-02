@@ -12,26 +12,33 @@ use Illuminate\Support\Facades\Hash;
 
 class JwtAuthController extends Controller
 {
+    #register function
     public function register(Request $request){
+        #this is the validate for the request
         $validator = Validator::make($request->all(),[
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required',
-            'repeat_password' => 'required|same:password'
         ]);
+        #validation if the request have a error
         if($validator->fails()){
+            #returned in json format the error with the 400 code
             return response()->json($validator->errors()->toJson(), 400);
-    }
-
-    $user = User::create([
-        'name' => $request->get('name'),
-        'email' => $request->get('email'),
-        'password' => Hash::make($request->get('password')),
-    ]);
-
-    $token = JWTAuth::fromUser($user);
-
-    return response()->json(compact('user','token'),201);
+        }
+        //call the user model and call the create function for save in the database
+        User::create([
+            #the data in the request
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            #call the hash methos to encode the password
+            'password' => Hash::make($request->get('password')),
+        ]);
+        #is user created returned a json object with the 201 code
+        return response()->json([
+            'message'=>'created',
+            "code"=>201,
+            "state"=>true
+        ],201);
     }
     public function login(Request $request){
         $credentials = $request->only('email', 'password');

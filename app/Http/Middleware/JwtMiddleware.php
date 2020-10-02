@@ -9,31 +9,30 @@ use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 use Tymon\JWTAuth\Facades\JWTAuth;
 class JwtMiddleware extends BaseMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
+   #this function validate the user is logged with a token
     public function handle(Request $request, Closure $next)
     {
+        #first validate is the token exist
         try{
+            #this parsed the token and authenticate
             $user = JWTAuth::parseToken()->authenticate();
-
-        }catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-
+        }
+        #this validate the token is expired
+        catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+            #return a message in json format
             return response()->json(['token_expired']);
-
-    } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-
+        }
+        #this validate the token is invalid
+        catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+            #return a message in json format
             return response()->json(['token_invalid']);
-
-    } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-
-            return response()->json(['No estas autorizado']);
-
-    }
+        }
+        #this validate the token has a exeption
+        catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+            #return a message in json format
+            return response()->json(['Unauthorized']);
+        }
+        #is the user is authenticate go to the next request
         return $next($request);
     }
 }

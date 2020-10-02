@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+    #this is the fields permited for the controller
     protected $fillable =['task','state'];
 }
