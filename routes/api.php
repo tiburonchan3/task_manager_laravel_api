@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\JwtAuthController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
@@ -26,4 +27,10 @@ Route::group(['prefix' => 'task'], function () {
     Route::get('/show/{id}',[TaskController::class,'show']);
     Route::patch('/edit/{id}',[TaskController::class,'update']);
     Route::delete('/delete/{id}',[TaskController::class,'destroy']);
+});
+Route::group(['prefix' => 'group'], function () {
+    Route::post('/store',[GroupController::class,'store']);
+    Route::get('/',[GroupController::class,'index']);
+    Route::get('/{id}',[GroupController::class,'show']);
+
 });
